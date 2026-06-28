@@ -1,0 +1,83 @@
+{
+  "as_of": "2026-06-28T23:00:00+00:00",
+  "last_close": 3410.82,
+  "direction": "range",
+  "confidence": 75,
+  "trend_structure": {
+    "pattern": "mixed",
+    "state": "ranging",
+    "recent_swings": [
+      {
+        "time": "2026-06-27T11:00:00+00:00",
+        "type": "HH",
+        "side": "high",
+        "price": 3427.18
+      },
+      {
+        "time": "2026-06-27T17:00:00+00:00",
+        "type": "LL",
+        "side": "low",
+        "price": 3403.3
+      },
+      {
+        "time": "2026-06-28T03:00:00+00:00",
+        "type": "LL",
+        "side": "low",
+        "price": 3390.43
+      },
+      {
+        "time": "2026-06-28T04:00:00+00:00",
+        "type": "LH",
+        "side": "high",
+        "price": 3406.62
+      },
+      {
+        "time": "2026-06-28T07:00:00+00:00",
+        "type": "HH",
+        "side": "high",
+        "price": 3408.98
+      },
+      {
+        "time": "2026-06-28T12:00:00+00:00",
+        "type": "HL",
+        "side": "low",
+        "price": 3393.33
+      },
+      {
+        "time": "2026-06-28T13:00:00+00:00",
+        "type": "LH",
+        "side": "high",
+        "price": 3408.56
+      },
+      {
+        "time": "2026-06-28T21:00:00+00:00",
+        "type": "HH",
+        "side": "high",
+        "price": 3416.59
+      }
+    ]
+  },
+  "key_levels": {
+    "support": [
+      3360.56,
+      3393.37,
+      3403.3,
+      3410.17
+    ],
+    "resistance": [
+      3408.05,
+      3416.59,
+      3427.18
+    ],
+    "breakout_up": 3417.64,
+    "breakdown_down": 3392.28,
+    "invalidated_trend_level": 3424.44,
+    "previous_day_high": 3427.18,
+    "previous_day_low": 3396.35,
+    "weekly_high": 3427.18,
+    "weekly_low": 3360.56,
+    "atr14": 10.46
+  },
+  "bias": "neutral",
+  "explanation": "Structure is mixed; close is above rising EMA20/EMA50; clustered swing, previous-day, and weekly levels define ATR-confirmed breakout thresholds. This describes current structure only, not a price prediction."
+}
