@@ -1,0 +1,76 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: cloudflare-pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build static Next.js site
+        run: npm run build
+
+      - name: Resolve Cloudflare Pages project name
+        id: pages_project
+        shell: bash
+        env:
+          CONFIGURED_PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+        run: |
+          set -euo pipefail
+
+          if [ -n "$CONFIGURED_PROJECT_NAME" ]; then
+            project_name="$CONFIGURED_PROJECT_NAME"
+          else
+            project_name="${GITHUB_REPOSITORY#*/}"
+            project_name="$(echo "$project_name" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+|-+$//g; s/-+/-/g')"
+          fi
+
+          if [ -z "$project_name" ]; then
+            echo "Unable to resolve a Cloudflare Pages project name." >&2
+            exit 1
+          fi
+
+          echo "name=$project_name" >> "$GITHUB_OUTPUT"
+          echo "Using Cloudflare Pages project: $project_name"
+
+      - name: Create Cloudflare Pages project if missing
+        uses: cloudflare/wrangler-action@v3
+        continue-on-error: true
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # If CLOUDFLARE_PROJECT_NAME is xau and no Pages project named xau exists,
+          # this creates it. If it already exists, Wrangler exits non-zero and
+          # continue-on-error lets the deploy step proceed.
+          command: pages project create ${{ steps.pages_project.outputs.name }} --production-branch=main
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy out --project-name=${{ steps.pages_project.outputs.name }} --branch=${{ github.head_ref || github.ref_name }}

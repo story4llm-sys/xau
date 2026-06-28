@@ -1,0 +1,3 @@
+# No required third-party dependencies.
+# Optional visualization:
+matplotlib>=3.7
